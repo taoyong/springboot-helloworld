@@ -6,6 +6,7 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -17,19 +18,37 @@ import javax.sql.DataSource;
 
 @Configuration
 @MapperScan(basePackages = "com.keeper.springBootHelloWorld.dao.mapper" , sqlSessionTemplateRef = "test1SqlSessionTemplate" )
-public class AppConfig {
+public class DataSourceConfig {
 
-    @Bean(name = "test1DataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.primary")
+    @Value("${current.datasource.tag}")
+    private String currentDataSourcTag;
+
+    @Bean(name = "mysqlDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.mysql")
     @Primary
-    public DataSource dataSource() {
+    public DataSource mysqlDataSource() {
         return DataSourceBuilder.create().build();
+    }
+
+
+    @Bean(name = "h2DataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.h2")
+    public DataSource h2DataSource() {
+        return DataSourceBuilder.create().build();
+    }
+
+    @Bean(name = "routeDataSource")
+    public DataSource dataSource() {
+        if("h2".equalsIgnoreCase(currentDataSourcTag)){
+            return h2DataSource();
+        }
+        return mysqlDataSource();
     }
 
 
     @Bean(name = "test1SqlSessionFactory")
     @Primary
-    public SqlSessionFactory testSqlSessionFactory(@Qualifier("test1DataSource") DataSource dataSource) throws Exception {
+    public SqlSessionFactory testSqlSessionFactory(@Qualifier("routeDataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         bean.setDataSource(dataSource);
         //bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mybatis/mapper/test1/*.xml"));
@@ -39,7 +58,7 @@ public class AppConfig {
 
     @Bean(name = "test1TransactionManager")
     @Primary
-    public DataSourceTransactionManager testTransactionManager(@Qualifier("test1DataSource") DataSource dataSource) {
+    public DataSourceTransactionManager testTransactionManager(@Qualifier("routeDataSource") DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }
 
