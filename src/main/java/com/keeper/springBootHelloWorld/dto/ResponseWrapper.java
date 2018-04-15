@@ -22,6 +22,11 @@ public class ResponseWrapper<T> {
         return ResponseWrapper.builder().code(ResponseCodeEnum.SUCC.getCode()).msg(ResponseCodeEnum.SUCC.getDesc()).build();
     }
 
+    public static  ResponseWrapper succ(Object obj){
+
+        return ResponseWrapper.builder().code(ResponseCodeEnum.SUCC.getCode()).msg(ResponseCodeEnum.SUCC.getDesc()).data(obj).build();
+    }
+
     public static ResponseWrapper fail(){
 
         return ResponseWrapper.builder().code(ResponseCodeEnum.FAIL.getCode()).msg(ResponseCodeEnum.FAIL.getDesc()).build();
