@@ -39,7 +39,7 @@ public class AppController {
      */
     @RequestMapping(value = "/greeting")
     public ModelAndView test(ModelAndView mv) {
-        mv.setViewName("/index");
+        mv.setViewName("index");
         mv.addObject("title","欢迎来到我的个人空间!");
         return mv;
     }
