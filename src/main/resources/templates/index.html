@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <title>欢迎来到我的网站</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎来到我的网站</title>
+</head>
+<body>
+  <p th:text="'Hello, ' + ${title}" /><br/>
+
+  <form method="POST" action="/helloworld/app/v1/upload" enctype="multipart/form-data">
+      <input type="file" name="file" /><br/><br/>
+      <input type="submit" value="Submit" />
+  </form>
+
+</body>
+</html>
